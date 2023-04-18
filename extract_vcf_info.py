@@ -39,7 +39,7 @@ with open (indel_file) as file:
 		x=x.replace("\n","")
 		x=x.split("\t")
 		lower_value=int(x[1])-int(5)
-		upper_val=len(x[3]) + int(x[1])
+		upper_val=len(x[3]) + int(x[1]) + int(5)
 		indel_data.append(x[0]+ "\t" + str(lower_value) + "\t" + str(upper_val))
 
 df=pd.DataFrame([x.strip().split("\t") for x in indel_data])
