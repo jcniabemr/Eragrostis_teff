@@ -38,8 +38,12 @@ with open (indel_file) as file:
 			continue
 		x=x.replace("\n","")
 		x=x.split("\t")
-		lower_value=int(x[1])-int(5)
-		upper_val=len(x[3]) + int(x[1]) + int(5)
+		lower_value=int(x[1]) - int(5)
+		if "," in x[4]:
+			y=x[4].split(",")
+			upper_val=(int(len(max(y, key=len))) + int(x[1]) + int(5)) 
+		else:
+			upper_val=int(len(x)) + int(x[1]) + int(5)
 		indel_data.append(x[0]+ "\t" + str(lower_value) + "\t" + str(upper_val))
 
 df=pd.DataFrame([x.strip().split("\t") for x in indel_data])
