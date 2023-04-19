@@ -29,7 +29,7 @@ with open (snp_infile) as file:
 		depth_data.append(x[5] + "\t" + x[8])
 	
 df=pd.DataFrame([x.strip().split("\t") for x in depth_data])
-df.to_csv("depth_data.txt",header=False, index=False, sep="\t")
+df.to_csv("depth_data.txt",header=False,index=False,sep="\t")
 
 ####Create SNP exclusion ranges 
 with open (indel_file) as file:
@@ -47,4 +47,5 @@ with open (indel_file) as file:
 		indel_data.append(x[0]+ "\t" + str(lower_value) + "\t" + str(upper_val))
 
 df=pd.DataFrame([x.strip().split("\t") for x in indel_data])
-df.to_csv("snp_excluson_data.txt",header=False, index=False, sep="\t")
+df.columns=["chromosome","start","end"]
+df.to_csv("snp_excluson_data.txt",index=False,sep="\t")
