@@ -17,6 +17,7 @@ indel_file=(args.indel)
 
 ####Create required lists 
 depth_data=[]
+qual_data=[]
 indel_data=[]
 
 ####Sep out depth data 
@@ -30,6 +31,18 @@ with open (snp_infile) as file:
 	
 df=pd.DataFrame([x.strip().split("\t") for x in depth_data])
 df.to_csv("depth_data.txt",header=False,index=False,sep="\t")
+
+####Sep out qual data 
+with open (snp_infile) as file:
+	for x in file:
+		if x.startswith("#"):
+			continue
+		x=x.replace("\n","")
+		x=x.split("\t")
+		qual_data.append(x[5])
+
+df=pd.DataFrame([x.strip().split("\t") for x in qual_data])
+df.to_csv("qual_data.txt",header=False,index=False,sep="\t")
 
 ####Create SNP exclusion ranges 
 with open (indel_file) as file:
