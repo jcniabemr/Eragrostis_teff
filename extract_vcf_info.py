@@ -17,6 +17,10 @@ indel_file=(args.indel)
 
 ####Create required lists 
 depth_data=[]
+S1_hom_depth=[]
+S1_het_depth=[]
+S2_hom_depth=[]
+S2_het_depth=[]
 qual_data=[]
 indel_data=[]
 
@@ -28,10 +32,31 @@ with open (snp_infile) as file:
 		x=x.replace("\n","")
 		x=x.split(":")
 		depth_data.append(x[5] + "\t" + x[8])
-	
-df=pd.DataFrame([x.strip().split("\t") for x in depth_data])
-df.to_csv("depth_data.txt",header=False,index=False,sep="\t")
-
+		if (x[3][2:]).strip() == "1/1":
+			S1_hom_depth.append(x[5])
+		else:
+			if (x[3][2:]).strip() == "0/1":
+				S1_het_depth.append(x[5])
+		if (x[6][-3:]).strip() == "1/1":
+			S2_hom_depth.append(x[8])
+		else:
+			if (x[6][-3:]).strip() == "0/1":
+				S2_het_depth.append(x[8])
+c=0
+for lst in depth_data, S1_hom_depth, S1_het_depth, S2_hom_depth, S2_het_depth:
+	df=pd.DataFrame([x.strip().split("\t") for x in lst])
+	c+=1
+	if c == 1:
+		df.to_csv("depth_data.txt",header=False,index=False,sep="\t")
+	elif c==2:
+		df.to_csv("S1_hom_depth_data.txt",header=False,index=False,sep="\t")
+	elif c==3:
+		df.to_csv("S1_het_depth_data.txt",header=False,index=False,sep="\t")
+	elif c==4:
+		df.to_csv("S2_hom_depth_data.txt",header=False,index=False,sep="\t")
+	elif c==5:
+		df.to_csv("S2_het_depth_data.txt",header=False,index=False,sep="\t")
+   
 ####Sep out qual data 
 with open (snp_infile) as file:
 	for x in file:
