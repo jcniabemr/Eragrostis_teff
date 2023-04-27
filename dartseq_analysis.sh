@@ -51,3 +51,6 @@ vcftools --vcf Asgori-Tank1_Kora-Tank1_filtered_combined.vcf --max-missing 1.0 -
 ####Remove duplicated positions and positions equal to 0
 cat dart_mapping.vcf | awk '($2 > 0){print $0}' > tmp && mv tmp	dart_mapping.vcf
 
+####Merge dart and Kora_Asgori data 
+bcftools view Kora_Asgori_common_SNP.vcf -Oz -o Kora_Asgori_common_SNP.vcf.gz
+bcftools view Dart_common_SNP.vcf -Oz -o Dart_common_SNP.vcf.gz

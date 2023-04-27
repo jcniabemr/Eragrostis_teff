@@ -89,6 +89,3 @@ for x in reformed:
 with open("dart_mapping.vcf", 'w') as f:
 	for x in out_file_info:
 		f.write(f"{x}\n")
-
-
-
