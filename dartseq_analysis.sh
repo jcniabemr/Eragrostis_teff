@@ -52,5 +52,13 @@ vcftools --vcf Asgori-Tank1_Kora-Tank1_filtered_combined.vcf --max-missing 1.0 -
 cat dart_mapping.vcf | awk '($2 > 0){print $0}' > tmp && mv tmp	dart_mapping.vcf
 
 ####Merge dart and Kora_Asgori data 
-bcftools view Kora_Asgori_common_SNP.vcf -Oz -o Kora_Asgori_common_SNP.vcf.gz
-bcftools view Dart_common_SNP.vcf -Oz -o Dart_common_SNP.vcf.gz
+####Before this you need to make sure the ## fields contain the contig and format fields, here this was just coppied from the other VCF 
+bcftools sort complment_dart_mapping.vcf -Oz -o complment_dart_mapping.vcf.gz
+bcftools sort Kora_Asgori_common_SNP.vcf -Oz -o Test_Kora_Asgori_common_SNP.vcf
+
+####Create index
+bcftools index Test_Kora_Asgori_common_SNP.vcf.gz
+bcftools index complment_dart_mapping.vcf.gz
+
+
+bcftools merge Test_Kora_Asgori_common_SNP.vcf.gz complment_dart_mapping.vcf.gz > Dart_Asgori-Tank1_Kora-Tank1_filtered_combined.vcf
