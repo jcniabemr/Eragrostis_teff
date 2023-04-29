@@ -1,31 +1,54 @@
 #!/usr/bin/env python 
 
-import sys
-import itertools 
+####Invert variants in dartseq file based on orientation in the genome sequence SNPs
+####Run using only presorted files eg bcftools sort, else ref and alt will be wrong order 
 
-# f=open(sys.argv[1])
+####Import funcions 
+import argparse
 
-# for x in f:
-# 	x=x.replace("\n","")
-# 	if x[0] == "#":
-# 		pass
-# 	else:
-# 		x=x.split("\t")
-# 		print (x[3]+"_"+x[4])
-# f.close()
+####Parse files
+ap=argparse.ArgumentParser()
+ap.add_argument('--dart',type=str,required=True,help="dartseq file")
+ap.add_argument('--vcf',type=str,required=True,help="sequencing SNP file")
+parse=ap.parse_args()
 
-total=0
-matches=0
+####Create lists
+ref_vars=[]
+dart_data=[]
+zipped_data=[]
+outfile=[]
 
-f1=open(sys.argv[1])
-f2=open(sys.argv[2])
+####Open files 
+with open(parse.vcf) as vcf:
+	for x in vcf:
+		if x.startswith("#"):
+			x=x.strip()
+			continue
+		x=x.strip().split("\t")
+		ref_vars.append(x[3]+"_"+x[4])
 
-for x,y in zip(f1,f2):
-	total+=1
-	if x == y:
-		matches+=1 
+with open(parse.dart) as dart:
+	for x in dart:
+		if x.startswith("#"):
+			x=x.strip()
+			outfile.append(x)
+			continue
+		dart_data.append(x)
 
-print (matches, total)
+####Zip ref SNPs and dart data together as a list using map 
+data=list(map(list, zip(ref_vars, dart_data)))
+for x in data:
+	zipped_data.append("\t".join(map(str,x)))
 
-f1.close()
-f2.close()
+for x in zipped_data:
+	x=x.strip().split()
+	if x[0][0] == x[4]:
+		outfile.append("\t".join(map(str,x[1:])))
+	else:
+		x[4]=x[4].replace(x[4],x[0][0])
+		x[5]=x[5].replace(x[5],x[0][2])
+		outfile.append("\t".join(map(str,x[1:]))) 
+
+with open("inverted_final_dart_data.vcf",'w') as f:
+	for x in outfile:
+		f.write(f"{x}\n")
