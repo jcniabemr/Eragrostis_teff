@@ -61,3 +61,7 @@ bcftools index Test_Kora_Asgori_common_SNP.vcf.gz
 bcftools index inverted_final_dart_data.vcf.gz
 
 bcftools merge Test_Kora_Asgori_common_SNP.vcf.gz inverted_final_dart_data.vcf.gz > Dart_Asgori-Tank1_Kora-Tank1_filtered_combined.vcf
+
+####Convert to plink format 
+vcftools --vcf Dart_Asgori-Tank1_Kora-Tank1_filtered_combined.vcf --plink --out Dart_Asgori-Tank1_Kora-Tank1_filtered_combined_vcf
+
