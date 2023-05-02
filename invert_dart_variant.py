@@ -47,8 +47,11 @@ for x in zipped_data:
 	else:
 		x[4]=x[4].replace(x[4],x[0][0])
 		x[5]=x[5].replace(x[5],x[0][2])
+		for i in range(10,254):
+			if x[i] == "0/0":
+				x[i]=x[i].replace(x[i],"1/1")
 		outfile.append("\t".join(map(str,x[1:]))) 
 
-with open("inverted_final_dart_data.vcf",'w') as f:
+with open("inverted_final_dart_data2.vcf",'w') as f:
 	for x in outfile:
 		f.write(f"{x}\n")

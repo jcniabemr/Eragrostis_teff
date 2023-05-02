@@ -77,9 +77,9 @@ for x in reformed:
 		if x[i] == "0":
 			x[i]=x[i].replace(x[i],"0/0")
 		elif x[i] == "1":
-			x[i]=x[i].replace(x[i],"0/1")
-		elif x[i] == "2":
 			x[i]=x[i].replace(x[i],"1/1")
+		elif x[i] == "2":
+			x[i]=x[i].replace(x[i],"0/1")
 		elif x[i] == "-":
 			x[i]=x[i].replace(x[i],"./.")
 	if str(x[0])+"_"+str(x[1]) not in duplicates:

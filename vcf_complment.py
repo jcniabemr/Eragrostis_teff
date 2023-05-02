@@ -5,7 +5,7 @@ import argparse
 
 ####Parse args 
 ap=argparse.ArgumentParser()
-ap.add_argument('--vcf',required=True,type=str,help="dart vcf")
+ap.add_argument('--odart',required=True,type=str,help="dart vcf")
 ap.add_argument('--dart',required=True,type=str,help="origional dart file")
 parse=ap.parse_args()
 
@@ -22,7 +22,7 @@ complements={
 }
 
 ####Open and extract
-with open(parse.dart) as f:
+with open(parse.odart) as f:
 	for x in f:
 		if x.startswith("*") or x.startswith("AlleleID"):
 			continue
@@ -30,7 +30,7 @@ with open(parse.dart) as f:
 		if x[11] == "Minus":
 			pos.append(x[6]+"_"+x[8])
 
-with open(parse.vcf) as f:
+with open(parse.dart) as f:
 	for x in f:
 		if x.startswith("#"):
 			x=x.strip()
@@ -48,6 +48,6 @@ with open(parse.vcf) as f:
 
 
 ####Write file 
-with open("complment_dart_mapping.vcf", 'w') as f:
+with open("complment_Dart_common_SNP.vcf", 'w') as f:
 	for x in complemented_out:
 		f.write(f"{x}\n")
