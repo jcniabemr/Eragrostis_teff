@@ -45,5 +45,20 @@ bcftools mpileup \
 -q 10 \
 -C 50 \
 -a AD,DP \
--f ${ref_genome} | bcftools call -c -v -Ov > /home/jconnell/eragrostis/teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf
-bcftools index /home/jconnell/eragrostis/teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf
+-f ${ref_genome} | bcftools call -c -v -Ov > /home/jconnell/eragrostis/teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf 
+
+####Replace bam file headders with two sed commands to strip /home/jconnell/eragrostis/trimmed_reads_barcodes/ and 3160705_alignment_sorted_2trim.bam leaving on the ID
+cat /home/jconnell/eragrostis/teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf | sed 's/\/home\/jconnell\/eragrostis\/trimmed_reads_barcodes\///g; s/\/\([0-9]*\)_alignment_sorted_2trim\.bam//g' > edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf 
+
+####Remove indels 
+cat edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf | grep "#\|INDEL" > INDEL_edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf
+cat edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf | grep -v "INDEL" > SNP_edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf
+
+####Create bed file for INDEL SNP filter and depth/qual data for plotting 
+python /home/jconnell/git_repos/niab_repos/eragrostis/extract_vcf_info.py -snp SNP_edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf -indel INDEL_edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf
+
+####Exclude SNPs round INDELs
+vcftools --vcf SNP_edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf --exclude-bed snp_excluson_data.txt --recode --recode-INFO-all --out filtered_indel_SNP_edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf
+
+###Filter based on a quality score of >20 == 99% probability there is a variant at that site. 
+bcftools filter -O v -o qual_filtered_indel_SNP_edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf.recode.vcf -i 'QUAL >= 20' filtered_indel_SNP_edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf.recode.vcf

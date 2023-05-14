@@ -25,7 +25,7 @@ done
 #For fitlering bcftools uses "&" to keep vairiants that meet all given criteria and "&&" to keep variants that match at least one of the given criteria
 https://www.htslib.org/workflow/filter.html
 ####Filter1 - based on quality, a score of >20 means that there is a 99% probability there is a variant at that site 
-bcftools filter -O v -o filter_SNP_teff.Dabbi_50954_V3_kora_asgori.vcf -i 'QUAL >= 10 & INFO/DP <= 320 & MQBZ >=-5 && MQBZ <= 5 && MQSBZ >=-5 && MQSBZ <= 5 & RPBZ >= -7.5 && RPBZ <= 7.5 & SCBZ > 4' SNP_teff.Dabbi_50954_V3_kora_asgori.vcf
+#bcftools filter -O v -o filter_SNP_teff.Dabbi_50954_V3_kora_asgori.vcf -i 'QUAL >= 10 & INFO/DP <= 320 & MQBZ >=-5 && MQBZ <= 5 && MQSBZ >=-5 && MQSBZ <= 5 & RPBZ >= -7.5 && RPBZ <= 7.5 & SCBZ > 4' SNP_teff.Dabbi_50954_V3_kora_asgori.vcf
 vcftools --vcf Asgori-Tank1_SNP_indelfiltered.vcf --minQ 20 --minDP 25 --maxDP 140  --recode --recode-INFO-all --out Asgori-Tank1_SNP_indelfiltered_depth_qualfilter
 vcftools --vcf Kora-Tank1_SNP_indelfiltered.vcf --minQ 20 --minDP 40 --maxDP 150 --recode --recode-INFO-all --out Kora-Tank1_SNP_indelfiltered_depth_qualfilter
 ####Merge vcf files 
