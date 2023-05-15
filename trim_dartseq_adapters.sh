@@ -49,16 +49,24 @@ bcftools mpileup \
 
 ####Replace bam file headders with two sed commands to strip /home/jconnell/eragrostis/trimmed_reads_barcodes/ and 3160705_alignment_sorted_2trim.bam leaving on the ID
 cat /home/jconnell/eragrostis/teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf | sed 's/\/home\/jconnell\/eragrostis\/trimmed_reads_barcodes\///g; s/\/\([0-9]*\)_alignment_sorted_2trim\.bam//g' > edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf 
-
 ####Remove indels 
 cat edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf | grep "#\|INDEL" > INDEL_edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf
 cat edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf | grep -v "INDEL" > SNP_edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf
-
 ####Create bed file for INDEL SNP filter and depth/qual data for plotting 
 python /home/jconnell/git_repos/niab_repos/eragrostis/extract_vcf_info.py -snp SNP_edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf -indel INDEL_edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf
-
 ####Exclude SNPs round INDELs
 vcftools --vcf SNP_edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf --exclude-bed snp_excluson_data.txt --recode --recode-INFO-all --out filtered_indel_SNP_edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf
-
 ###Filter based on a quality score of >20 == 99% probability there is a variant at that site. 
 bcftools filter -O v -o qual_filtered_indel_SNP_edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf.recode.vcf -i 'QUAL >= 20' filtered_indel_SNP_edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf.recode.vcf
+####Remove bialelic SNP
+cat qual_filtered_indel_SNP_edited_teff.Dabbi_50954_V3_kora_asgori_dartseq.vcf.recode.vcf | awk -F '\t' '{split($5,a,","); if(length(a)<=1) print}' > bi_qual_filtered_indel_SNP_edited_teff.Dabbi_50954_V3_kora_asgori_dartseq_recode.vcf
+####Take lines were data is in both files  
+python /home/jconnell/git_repos/niab_repos/eragrostis/find_similar_variants.py --dart bi_qual_filtered_indel_SNP_edited_teff.Dabbi_50954_V3_kora_asgori_dartseq_recode.vcf --seq unique_Asgori-Tank1_Kora-Tank1_filtered_combined.vcf.recode.vcf
+####Merge dart and Kora_Asgori data 
+####Before this you need to make sure the ## fields contain the contig and format fields, here this was just coppied from the other VCF 
+bcftools sort Dart_common_SNP.vcf -Oz -o Dart_common_SNP.vcf.gz
+bcftools sort Kora_Asgori_common_SNP.vcf -Oz -o Kora_Asgori_common_SNP.vcf.gz
+####Create index
+bcftools index Dart_common_SNP.vcf.gz
+bcftools index Kora_Asgori_common_SNP.vcf.gz
+bcftools merge Kora_Asgori_common_SNP.vcf.gz Dart_common_SNP.vcf.gz > combined_final_VCFDART_VCF_GS.vcf
