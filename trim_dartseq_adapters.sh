@@ -70,3 +70,6 @@ bcftools sort Kora_Asgori_common_SNP.vcf -Oz -o Kora_Asgori_common_SNP.vcf.gz
 bcftools index Dart_common_SNP.vcf.gz
 bcftools index Kora_Asgori_common_SNP.vcf.gz
 bcftools merge Kora_Asgori_common_SNP.vcf.gz Dart_common_SNP.vcf.gz > combined_final_VCFDART_VCF_GS.vcf
+
+####Results 
+#/mnt/shared/projects/niab/eragrostis/test_data/combined_final_VCFDART_VCF_GS.vcf
