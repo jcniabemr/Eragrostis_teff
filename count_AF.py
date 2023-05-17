@@ -17,19 +17,19 @@ for x in open(parse.i):
 	count0=0
 	count1=0
 ####Number of samples 
-	for y in range(9,300):
-		v1=x[y].split("/")[0]
-		v2=x[y].split("/")[1].split(":")[0]
-		if int(v1)==0:
-			count0+=1
-		else:
-			count1+=1
-		if int(v2)==0:
-			count0+=1
-		else:
-			count1+=1
-	count_data.append("\t".join([pos,str(count0),str(count1)]))
-
+	for y in range(9,len(x)):
+		if x[y][0:3] != "./.":
+			v1=x[y].split("/")[0]
+			v2=x[y].split("/")[1].split(":")[0]
+			if int(v1)==0:
+				count0+=1
+			else:
+				count1+=1
+				if int(v2)==0:
+					count0+=1
+				else:
+					count1+=1
+	count_data.append("\t".join([pos,str(float(count0/(count0+count1)*100)),str(float(count1/(count0+count1)*100))]))
 #print(count_data)
 
 with open("AF_results.txt", 'w') as file:

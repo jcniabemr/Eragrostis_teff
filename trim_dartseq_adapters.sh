@@ -71,5 +71,26 @@ bcftools index Dart_common_SNP.vcf.gz
 bcftools index Kora_Asgori_common_SNP.vcf.gz
 bcftools merge Kora_Asgori_common_SNP.vcf.gz Dart_common_SNP.vcf.gz > combined_final_VCFDART_VCF_GS.vcf
 
+####Filter on depth and max half data missing 
+
+vcftools --vcf combined_final_VCFDART_VCF_GS.vcf --minDP 1 --max-missing 0.5 --recode --recode-INFO-all --out DP_combined_final_VCFDART_VCF_GS.vcf 
 ####Results 
-#/mnt/shared/projects/niab/eragrostis/test_data/combined_final_VCFDART_VCF_GS.vcf
+#/mnt/shared/projects/niab/eragrostis/test_data/DP_combined_final_VCFDART_VCF_GS.vcf.recode.vcf
+
+####Remove samples where both parents are "1/1"
+python /home/jconnell/git_repos/niab_repos/eragrostis/remove_identical_samples.py -i DP_combined_final_VCFDART_VCF_GS.vcf.recode.vcf
+
+####Calculate allele freqs 
+python /home/jconnell/git_repos/niab_repos/eragrostis/count_AF.py -i kept_data.vcf
+
+####Look at similairty betwen genome seq kora and dartseq kora in kept data 
+
+python /home/jconnell/all_vs_all.py <( grep -v "^##" kept_data.vcf) > comparison_results.txt
+es comparison_results.txt | grep "3160885" | grep "Kora"
+Kora-Tank1      3160885 0.4782798515607946      2191.0  4581.0
+
+####Look at similairty betwen genome seq kora and dartseq kora in disgarded data 
+python /home/jconnell/all_vs_all.py <( grep -v "^##" removed_data.vcf) > comparison_results.txt
+es comparison_results.txt | grep "3160885" | grep "Kora"
+Kora-Tank1      3160885 0.937814357567444       2051.0  2187.0
+
