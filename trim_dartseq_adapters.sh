@@ -83,11 +83,18 @@ python /home/jconnell/git_repos/niab_repos/eragrostis/remove_identical_samples.p
 ####Calculate allele freqs 
 python /home/jconnell/git_repos/niab_repos/eragrostis/count_AF.py -i kept_data.vcf
 
-####Look at similairty betwen genome seq kora and dartseq kora in kept data 
-
-python /home/jconnell/all_vs_all.py <( grep -v "^##" kept_data.vcf) > comparison_results.txt
-es comparison_results.txt | grep "3160885" | grep "Kora"
+####Look at similairty betwen genome seq kora and DArTseq kora in kept data 
+python /home/jconnell/all_vs_all.py <( grep -v "^##" kept_data.vcf) > kora_comparison_results.txt
+es kora_comparison_results.txt | grep "3160885" | grep "Kora"
 Kora-Tank1      3160885 0.4782798515607946      2191.0  4581.0
+
+####Look at similairty betwen genome seq ascori and DArTseq in kept data 
+python /home/jconnell/all_vs_all.py <( grep -v "^##" kept_data.vcf) > kora_comparison_results.txt
+es kora_comparison_results.txt | grep "3160885" | grep "Kora"
+Kora-Tank1      3160885 0.4782798515607946      2191.0  4581.0
+
+
+
 
 ####Look at similairty betwen genome seq kora and dartseq kora in disgarded data 
 python /home/jconnell/all_vs_all.py <( grep -v "^##" removed_data.vcf) > comparison_results.txt
